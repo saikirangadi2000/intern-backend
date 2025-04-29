@@ -13,7 +13,9 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const prisma = new PrismaClient();
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://127.0.0.1:5500', 'http://127.0.0.1:5500/backend/index.html', 'https://gwingsoftwaretechnologies.com/' ]
+}));
 app.use(express.json());
 
 // Email configuration
