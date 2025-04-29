@@ -84,6 +84,8 @@ app.post('/api/intern', async (req, res) => {
     if (existingIntern) {
       return res.status(400).json({ error: 'Email already exists' });
     }
+
+
     
     const intern = await prisma.intern.create({ data: 
       {
@@ -95,7 +97,6 @@ app.post('/api/intern', async (req, res) => {
         duration: duration,
         college: college,
         
-
       }
      });
     res.json(intern);
@@ -123,7 +124,7 @@ app.get('/api/interns', authenticateToken, async (req, res) => {
 
 // Send offer letter
 // Add this function at the top level of your file
-async function generateOfferLetter(intern, startDate, endDate) {
+async function generateOfferLetter(intern, startDate, endDate, internId) {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
@@ -143,7 +144,7 @@ async function generateOfferLetter(intern, startDate, endDate) {
     // Add content
     const startY = 50;
     doc.text(`Date: ${startDate.toLocaleDateString()}`, 15, startY);
-    doc.text(`ID: GWING${Date.now().toString().slice(-6)}`, 15, startY + 10);
+    doc.text(`ID: ${internId}`, 15, startY + 10);
     doc.text(`Dear ${intern.fullName},`, 15, startY + 30);
 
     // Add paragraphs
@@ -180,6 +181,7 @@ app.post('/api/interns/offer', authenticateToken, async (req, res) => {
     endDate.setDate(endDate.getDate() + 30);
 
     const internshipId = `GWING${Date.now().toString().slice(-6)}`;
+    
 
     const intern = await prisma.intern.update({
       where: { id: id },
@@ -188,9 +190,15 @@ app.post('/api/interns/offer', authenticateToken, async (req, res) => {
         offerLetterSent: true,
         startDate,
         endDate,
-        internId: internshipId
+        internId : internshipId
       }
     });
+    const internId = intern.internId;
+    // Fetch intern's ID
+    // const internId = await prisma.intern.findUnique({
+    //   where: { id: id },
+    //   select: { internId: true }
+    // });
 
     // Fetch tasks link based on intern's role
     const tasks = await prisma.tasksPdf.findFirst({
@@ -198,7 +206,7 @@ app.post('/api/interns/offer', authenticateToken, async (req, res) => {
     });
 
     // Generate the PDF
-    const pdfBuffer = await generateOfferLetter(intern, startDate, endDate);
+    const pdfBuffer = await generateOfferLetter(intern, startDate, endDate, internId);
 
     // Send offer letter email with tasks link
     await transporter.sendMail({
