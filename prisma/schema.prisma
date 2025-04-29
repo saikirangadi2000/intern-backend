@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id       Int      @id @default(autoincrement())
+  username String   @unique
+  password String
+}
+
+model Intern {
+  id               String @id @default(cuid())
+  fullName         String
+  email            String    @unique
+  mobile           String
+  qualification    String
+  college          String
+  role             String
+  duration         String
+  internId         String?
+  status           String    @default("PENDING") // PENDING, OFFER_SENT, ACTIVE, COMPLETED
+  offerLetterSent  Boolean   @default(false)
+  certificateSent  Boolean   @default(false)
+  startDate        DateTime?
+  endDate          DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model WhatsappLink {
+  id          String @id @default(cuid())
+  whatsapp    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TasksPdf{
+  id          Int @id @default(autoincrement())
+  domain      String
+  domainLink  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
