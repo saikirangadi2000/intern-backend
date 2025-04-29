@@ -14,8 +14,19 @@ const app = express();
 const prisma = new PrismaClient();
 
 app.use(cors({
-  origin: [ 'http://127.0.0.1:5500','http://127.0.0.1:5501','http://127.0.0.1:5501/index', 'http://127.0.0.1:5500/index.html', 'https://gwingsoftwaretechnologies.com/' ]
+  origin: [
+    'http://127.0.0.1:5500',
+    'http://127.0.0.1:5501',
+    'http://localhost:5500', // Add this
+    'http://localhost:5501', // Add this
+    'https://gwingsoftwaretechnologies.com',
+    'https://www.gwingsoftwaretechnologies.com' // Add www version
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
+
 app.use(express.json());
 
 // Email configuration
