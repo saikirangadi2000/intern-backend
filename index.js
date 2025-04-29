@@ -29,9 +29,9 @@ app.use(cors({
 
 app.use(express.json());
 
-app.use('/', (req, res) =>{
-  return res.send('Hello World!');
-})
+// app.use('/', (req, res) =>{
+//   return res.send('Hello World!');
+// })
 
 // Email configuration
 const transporter = nodemailer.createTransport({
