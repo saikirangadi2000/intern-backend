@@ -162,7 +162,7 @@ paragraphs.forEach(paragraph => {
         maxWidth: pageWidth - 30,
         align: "justify"
     });
-    currentY += 20; // Spacing set to half (15 units)
+    currentY += 30; // Spacing set to half (15 units)
 });
     
 
