@@ -149,22 +149,21 @@ async function generateOfferLetter(intern, startDate, endDate, internId) {
 
     // Add paragraphs
     const paragraphs = [
-        `We are delighted to extend an virtual internship offer for the ${intern.role} position at GWING SOFTWARE TECHNOLOGIES. Your skills and enthusiasm align well with our team, and we are excited to have you join us.`,
-        `The internship will commence on ${startDate.toLocaleDateString()}, and conclude on ${endDate.toLocaleDateString()}. This program is designed to provide you with hands-on experience and opportunities to develop your skills.`,
-        `As an intern, you will be responsible for completing assigned tasks to the best of your ability and adhering to all company guidelines.`,
-        `By accepting this offer, you confirm your commitment to diligently executing assigned tasks and maintaining a high standard of work.`,
-        `We look forward to welcoming you to the GWING team and supporting your career aspirations.`
-    ];
+    `We are delighted to extend an virtual internship offer for the ${intern.role} position at GWING SOFTWARE TECHNOLOGIES. Your skills and enthusiasm align well with our team, and we are excited to have you join us.`,
+    `The internship will commence on ${startDate.toLocaleDateString()}, and conclude on ${endDate.toLocaleDateString()}. This program is designed to provide you with hands-on experience and opportunities to develop your skills. This is an unpaid internship.`,
+    `As an intern, you will be responsible for completing assigned tasks to the best of your ability and adhering to all company guidelines.`,
+    `By accepting this offer, you confirm your commitment to diligently executing assigned tasks and maintaining a high standard of work.`,
+    `We look forward to welcoming you to the GWING team and supporting your career aspirations.`
+];
 
-    let currentY = startY + 45;
-    paragraphs.forEach(paragraph => {
-        doc.text(paragraph, 15, currentY, {
-            maxWidth: pageWidth - 30,
-            align: "justify"
-        });
-        currentY += 30;
+let currentY = startY + 45;
+paragraphs.forEach(paragraph => {
+    doc.text(paragraph, 15, currentY, {
+        maxWidth: pageWidth - 30,
+        align: "justify"
     });
-
+    currentY += 20; // Spacing set to half (15 units)
+});
     
 
     // Return the PDF as buffer
