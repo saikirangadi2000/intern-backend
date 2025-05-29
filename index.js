@@ -56,6 +56,16 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
+// Add this helper function at the top of your file after the imports
+function formatDate(date) {
+  return date.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+}
+ // Example usage
+
 // Admin login
 app.post('/api/login', async (req, res) => {
   try {
@@ -128,6 +138,7 @@ async function generateOfferLetter(intern, startDate, endDate, internId) {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
+    const name = intern.fullName;
  
     // Load the full page background image
     const templatePath = path.join(__dirname, 'templates', 'letterhead.png');
@@ -143,14 +154,14 @@ async function generateOfferLetter(intern, startDate, endDate, internId) {
 
     // Add content
     const startY = 50;
-    doc.text(`Date: ${startDate.toLocaleDateString()}`, 15, startY);
+    doc.text(`Date: ${new Date(startDate).toDateString().slice(4,16)}`, 15, startY);
     doc.text(`ID: ${internId}`, 15, startY + 10);
-    doc.text(`Dear ${intern.fullName},`, 15, startY + 30);
+    doc.text(`Dear ${name.toUpperCase()},`, 15, startY + 30);
 
     // Add paragraphs
     const paragraphs = [
     `We are delighted to extend an virtual internship offer for the ${intern.role} position at GWING SOFTWARE TECHNOLOGIES. Your skills and enthusiasm align well with our team, and we are excited to have you join us.`,
-    `The internship will commence on ${startDate.toLocaleDateString()}, and conclude on ${endDate.toLocaleDateString()}. This program is designed to provide you with hands-on experience and opportunities to develop your skills. This is an unpaid internship.`,
+    `The internship will commence on ${new Date(startDate).toDateString().slice(4,16)}, and conclude on ${new Date(endDate).toDateString().slice(4,16)}. This program is designed to provide you with hands-on experience and opportunities to develop your skills. This is an unpaid internship.`,
     `As an intern, you will be responsible for completing assigned tasks to the best of your ability and adhering to all company guidelines.`,
     `By accepting this offer, you confirm your commitment to diligently executing assigned tasks and maintaining a high standard of work.`,
     `We look forward to welcoming you to the GWING team and supporting your career aspirations.`
@@ -214,7 +225,7 @@ app.post('/api/interns/offer', authenticateToken, async (req, res) => {
       subject: 'GWING Internship Offer Letter',
       html: `
         <h1>Congratulations!</h1>
-        <p>Your internship at GWING Software Technologies starts on ${startDate.toLocaleDateString()}</p>
+        <p>Your internship at GWING Software Technologies starts on ${new Date(startDate).toDateString().slice(4,16)}</p>
         <p>Please find your offer letter attached.</p>
         ${tasks ? `
         <h2>Your Internship Tasks</h2>
@@ -297,6 +308,7 @@ async function generateCertificate(intern, startDate, endDate) {
     });
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
+    const name = intern.fullName
 
     // Load the certificate background
     const templatePath = path.join(__dirname, 'templates', 'certificate-bg.png');
@@ -308,19 +320,19 @@ async function generateCertificate(intern, startDate, endDate) {
     // Set font and formatting for ID
     doc.setFont("helvetica");
     doc.setFontSize(14);
-    doc.setTextColor("#000000");
+    doc.setTextColor("#0b1320");
     doc.text(`This certificate is proudly presented to ID: ${intern.internId}`, pageWidth / 2, 88, { align: "center" });
 
     // Set font for name
-    doc.setFont("helvetica", "bold");
+    doc.setFont("helvetica", "semi-bold");
     doc.setFontSize(30);
-    doc.text(`${intern.fullName}`, pageWidth / 2, 110, { align: "center" });
+    doc.text(`${name.toUpperCase()}`, pageWidth / 2, 110, { align: "center" });
 
     // Set font for description
-    doc.setFont("helvetica");
+    doc.setFont("helvetica", "normal");
     doc.setFontSize(14);
     doc.text(
-        `Successfully completed remote Internship at GWING Software Technologies, as a ${intern.role} Intern, actively contributing to projects from ${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()} with unwavering dedication.`,
+        `successfully completed Remote Internship at GWING Software Technologies, as a ${intern.role} Intern, actively contributing to projects from ${new Date(startDate).toDateString().slice(4,16)} to ${new Date(intern.endDate).toDateString().slice(4,16)} with unwavering dedication.`,
         pageWidth / 2,
         122,
         { align: "center", maxWidth: pageWidth - 70 }
@@ -330,16 +342,19 @@ async function generateCertificate(intern, startDate, endDate) {
 }
 
 // Update the certificate route
-app.post('/api/interns/:id/certificate', authenticateToken, async (req, res) => {
+app.post('/api/interns/certificate/:id', authenticateToken, async (req, res) => {
+        console.log('Received request to generate certificate for intern ID:', req.params.id);
+
     try {
         const { id } = req.params;
+        
         const intern = await prisma.intern.findUnique({
-            where: { id: parseInt(id) }
+            where: { id: id}
         });
 
-        if (!intern || !intern.startDate || !intern.endDate) {
-            return res.status(400).json({ error: 'Invalid intern or dates' });
-        }
+        // if (!intern || !intern.startDate || !intern.endDate) {
+        //     return res.status(400).json({ error: 'Invalid intern or dates' });
+        // }
 
         // Generate the certificate
         const pdfBuffer = await generateCertificate(
@@ -349,7 +364,7 @@ app.post('/api/interns/:id/certificate', authenticateToken, async (req, res) => 
         );
 
         const updatedIntern = await prisma.intern.update({
-            where: { id: parseInt(id) },
+            where: { id: id },
             data: {
                 status: 'COMPLETED',
                 certificateSent: true
@@ -362,10 +377,10 @@ app.post('/api/interns/:id/certificate', authenticateToken, async (req, res) => 
             to: intern.email,
             subject: 'GWING Internship Certificate',
             html: `
-                <h1>Congratulations on completing your internship!</h1>
+                <h3>Congratulations on completing your internship!</h3>
                 <p>Dear ${intern.fullName},</p>
                 <p>We are pleased to present you with your internship completion certificate.</p>
-                <p>Thank you for your contributions to GWING Software Technologies.</p>
+                <p>Thank you for you joining GWING Software Technologies.</p>
             `,
             attachments: [{
                 filename: `${intern.fullName}-certificate.pdf`,
