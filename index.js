@@ -229,8 +229,9 @@ app.post('/api/interns/offer', authenticateToken, async (req, res) => {
         <p>Please find your offer letter attached.</p>
         ${tasks ? `
         <h2>Your Internship Tasks</h2>
-        <p>To complete your internship successfully, please follow the tasks provided in this link:</p>
+        <p>To complete your internship successfully, you have <strong>four tasks</strong> to complete within the duration of your internship. Please find the tasks provided in this link:</p>
         <a href="${tasks.domainLink}" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0;">View Tasks</a>
+        <p>Once you complete all four tasks, you'll need to submit them via the Google Form that will be shared in the WhatsApp group you joined. If you haven't joined the WhatsApp group yet, the link is available on the internship application form page. Further instructions will be provided in the WhatsApp group.</p>
         ` : ''}
         <p>Best regards,<br>GWING Software Technologies</p>
       `,
