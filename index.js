@@ -222,18 +222,34 @@ app.post('/api/interns/offer', authenticateToken, async (req, res) => {
     await transporter.sendMail({
       from: process.env.SMTP_USER,
       to: intern.email,
-      subject: 'GWING Internship Offer Letter',
+      subject: 'GWING Internship Offer Letter & Guidelines',
       html: `
-        <h1>Congratulations!</h1>
-        <p>Your internship at GWING Software Technologies starts on ${new Date(startDate).toDateString().slice(4,16)}</p>
-        <p>Please find your offer letter attached.</p>
-        ${tasks ? `
-        <h2>Your Internship Tasks</h2>
-        <p>To complete your internship successfully, you have <strong>four tasks</strong> to complete within the duration of your internship. Please find the tasks provided in this link:</p>
-        <a href="${tasks.domainLink}" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0;">View Tasks</a>
-        <p>Once you complete all four tasks, you'll need to submit them via the Google Form that will be shared in the WhatsApp group you joined. If you haven't joined the WhatsApp group yet, the link is available on the internship application form page. Further instructions will be provided in the WhatsApp group.</p>
-        ` : ''}
-        <p>Best regards,<br>GWING Software Technologies</p>
+         <h1>Congratulations on Your Internship Offer!</h1>
+        <p>Dear ${intern.fullName},</p>
+        <p>We are excited to welcome you as a ${intern.role} Intern at GWING Software Technologies. Your internship officially starts on <strong>${intern.startDate.toDateString().slice(4, 16)}</strong> and will conclude on <strong>${intern.endDate.toDateString().slice(4, 16)}</strong>.</p>
+        
+        <h2>Your Internship Task</h2>
+        <p>To successfully complete your internship, you have to work on a project related to your role. Click the link below to view your task:</p>
+        <a href="https://internship-tasks.gwingsoftwaretechnologies.com/" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0;">View Your Internship Tasks</a>
+        
+        <h2>Important Guidelines for Your Internship Report</h2>
+        <p>The most crucial part of your internship is the final report, which should be a minimum of 20 pages. This report is your opportunity to showcase everything you have learned and accomplished during your time with us. It's a way for us to understand your learning journey, not just your final project output.</p>
+        
+        <p><strong>Your report must include:</strong></p>
+        <ul>
+          <li>Your Name, InternId and Project Title</li>
+          <li>A detailed account of your learning journey and activities throughout the internship.</li>
+          <li>Links to your GitHub repositories for the projects.</li>
+          <li>Links to LinkedIn video demonstrations of the projects you have completed.(Optional)</li>
+        </ul>
+        
+        <p><strong>Key Takeaway:</strong> We understand that not all projects can be completed 100% within the internship period. What matters most is the effort and learning you put in. Even if you don't fully complete a task, your internship report should reflect your diligent effort and document the progress you made. This report serves as proof of your commitment and learning, which is the most important metric for us.</p>
+        
+        <p><strong>Submission Process:</strong> We will share a Google Form link in the official WhatsApp group for you to submit your internship report. Please submit your report in either PDF or Word format.</p>
+        
+        <p>Please find your official offer letter attached to this email. We are thrilled to have you on board and look forward to a successful internship experience with you.</p>
+        
+        <p>Best regards,<br>GWING Team</p>
       `,
       attachments: [
         {
