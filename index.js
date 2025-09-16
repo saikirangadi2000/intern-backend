@@ -230,7 +230,7 @@ app.post('/api/interns/offer', authenticateToken, async (req, res) => {
         
         <h2>Your Internship Task</h2>
         <p>To successfully complete your internship, you have to work on a project related to your role. Click the link below to view your task:</p>
-        <a href="https://internship-tasks.gwingsoftwaretechnologies.com/" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0;">View Your Internship Tasks</a>
+        <a href="https://drive.google.com/file/d/1IRrPd1ecjtJ0jr0MIkpSe5JIL7mB5YEL/view?usp=sharing" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0;">View Your Internship Tasks</a>
         
         <h2>Important Guidelines for Your Internship Report</h2>
         <p>The most crucial part of your internship is the final report, which should be a minimum of 20 pages. This report is your opportunity to showcase everything you have learned and accomplished during your time with us. It's a way for us to understand your learning journey, not just your final project output.</p>
